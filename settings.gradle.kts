@@ -2,9 +2,9 @@ rootProject.name = "geo-gis-kit-kmp"
 
 pluginManagement {
     repositories {
-        gradlePluginPortal()
         google()
         mavenCentral()
+        gradlePluginPortal()
     }
 }
 

@@ -216,9 +216,14 @@ public object KmlParser {
     private fun extractAllBlocks(xml: String, tag: String): List<String> {
         val prefix = "(?:[A-Za-z_][A-Za-z0-9_.-]*:)?"
         val pattern = Regex("<$prefix$tag(?:\\s+[^>]*)?>(.*?)</$prefix$tag\\s*>", RegexOption.DOT_MATCHES_ALL)
-        val blocks = pattern.findAll(xml).take(100_001).map { it.groupValues[1] }.toList()
-        require(blocks.size <= 100_000) { "KML_FEATURE_LIMIT" }
-        return blocks
+        val list = mutableListOf<String>()
+        var match = pattern.find(xml)
+        while (match != null) {
+            list.add(match.groupValues[1])
+            if (list.size > 100_000) throw IllegalArgumentException("KML_FEATURE_LIMIT")
+            match = match.next()
+        }
+        return list
     }
 
     private fun cleanCData(text: String): String {
