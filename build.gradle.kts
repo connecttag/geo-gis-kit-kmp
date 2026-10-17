@@ -6,14 +6,14 @@ plugins {
 }
 
 group = "org.connecttag.lib"
-version = "1.0.4"
+version = "1.0.5"
 
 kotlin {
     jvmToolchain(21)
 
     android {
         namespace = "org.connecttag.lib.gis"
-        compileSdk = 36
+        compileSdk = 37
         minSdk = 24
         compilerOptions {
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
