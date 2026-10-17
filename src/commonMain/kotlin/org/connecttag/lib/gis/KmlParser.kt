@@ -125,10 +125,10 @@ public object KmlParser {
 
     private fun extractStyles(xml: String): Map<String, KmlStyle> {
         val styles = mutableMapOf<String, KmlStyle>()
-        val styleRegex = Regex("""<Style\s+id=["']([^"']+)["'][^>]*>(.*?)</Style>""", RegexOption.DOT_MATCHES_ALL)
-        val matches = styleRegex.findAll(xml)
+        val styleRegex = Regex("""<Style\s+id=["']([^"']+)["'][^>]*>([\s\S]*?)</Style>""")
+        var match = styleRegex.find(xml)
 
-        for (match in matches) {
+        while (match != null) {
             val styleId = match.groupValues[1]
             val content = match.groupValues[2]
 
@@ -159,6 +159,7 @@ public object KmlParser {
             }
 
             styles[styleId] = KmlStyle(strokeColor, strokeWidth, fillColor)
+            match = match.next()
         }
         return styles
     }
@@ -209,13 +210,13 @@ public object KmlParser {
 
     private fun extractTagContent(xml: String, tag: String): String? {
         val prefix = "(?:[A-Za-z_][A-Za-z0-9_.-]*:)?"
-        val pattern = Regex("<$prefix$tag(?:\\s+[^>]*)?>(.*?)</$prefix$tag\\s*>", RegexOption.DOT_MATCHES_ALL)
+        val pattern = Regex("<$prefix$tag(?:\\s+[^>]*)?>([\\s\\S]*?)</$prefix$tag\\s*>")
         return pattern.find(xml)?.groupValues?.get(1)
     }
 
     private fun extractAllBlocks(xml: String, tag: String): List<String> {
         val prefix = "(?:[A-Za-z_][A-Za-z0-9_.-]*:)?"
-        val pattern = Regex("<$prefix$tag(?:\\s+[^>]*)?>(.*?)</$prefix$tag\\s*>", RegexOption.DOT_MATCHES_ALL)
+        val pattern = Regex("<$prefix$tag(?:\\s+[^>]*)?>([\\s\\S]*?)</$prefix$tag\\s*>")
         val list = mutableListOf<String>()
         var match = pattern.find(xml)
         while (match != null) {
